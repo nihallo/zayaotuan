@@ -13,6 +13,6 @@ import java.util.List;
 @Document(collection="API_PROCESSING")
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class ApiProcessing {
-    private int apiId;
+    private String apiId;
     private List<ApiProcessingStep> apiProcessingStepList;
 }

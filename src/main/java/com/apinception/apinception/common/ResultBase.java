@@ -8,7 +8,7 @@ public class ResultBase<T> implements Serializable {
     private boolean isSuccess;
     private String code;
     private String msg;
-    private T value;
+    private T data;
 
     public ResultBase() {
         this.isSuccess = false;
@@ -16,7 +16,7 @@ public class ResultBase<T> implements Serializable {
 
     public ResultBase(T value) {
         this.isSuccess = true;
-        this.value = value;
+        this.data = value;
     }
 
     public ResultBase(String msg, String code) {
@@ -30,12 +30,12 @@ public class ResultBase<T> implements Serializable {
         this.code = code;
     }
 
-    public T getValue() {
-        return this.value;
+    public T getData() {
+        return data;
     }
 
-    public void setValue(T value) {
-        this.value = value;
+    public void setData(T data) {
+        this.data = data;
     }
 
     public boolean isSuccess() {
@@ -71,7 +71,7 @@ public class ResultBase<T> implements Serializable {
 
     public ResultBase<T> success(T responseDTo) {
         this.setSuccess(true);
-        this.setValue(responseDTo);
+        this.setData(responseDTo);
         return this;
     }
 

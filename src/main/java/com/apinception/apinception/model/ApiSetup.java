@@ -16,7 +16,7 @@ import java.util.List;
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class ApiSetup {
     @Id
-    private int id;
+    private String id;
     private String apiName;
     private String apiEndpoint;
     private List<ApiField> apiFieldsList;
