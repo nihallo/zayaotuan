@@ -39,6 +39,7 @@ public class ApiFieldController {
             resultBase.setSuccess(true);
             return resultBase;
         }else {
+            resultBase.setMsg("不存在step或者ApiFieldList为空");
             resultBase.setSuccess(false);
             return resultBase;
         }
