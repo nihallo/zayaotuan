@@ -3,8 +3,8 @@ package com.apinception.apinception.model;
 public class ApiProcessingStep {
     private int stepNumber ;
     private String stepName;
-    private String checkBeforeRun;
-    private String actionType; // 值 ： ADD_LIST, VALIDATE, CONNECTOR
+    private String checkBeforeRun; // if true, run this step, if not, skip
+    private String actionType; // 值 ： ADD_LIST, ADD_FIELD, VALIDATE, CONNECTOR
     private String dataLevel; // 值 ：LEVEL_1 LEVEL_2, LEVEL_3, lEVEL_4, LEVEL_5
     private String addToWhichListName;
     private String fieldNameListName;
@@ -14,7 +14,7 @@ public class ApiProcessingStep {
     private String tableName;
     private String whereCluse;
     private String sequenceCode;
-    private String errorType;
+    private String errorType; //ERROR, WARNING
     private String errorMessage;
-    private String connectorID;
+    private String connectorId; // KEY TO connector setup
 }
