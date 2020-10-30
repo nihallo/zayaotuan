@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 /**
  * 做数据回填查询
  */
-@Service
+
 public interface CommonQueryService {
 
 
@@ -18,10 +18,12 @@ public interface CommonQueryService {
      */
     public JSONObject addFieldAndFormula(ApiProcessingStep apiProcessingStep, JSONObject jsonObject);
 
-    public JSONObject addFieldAndQueryDb(ApiProcessingStep apiProcessingStep, JSONObject jsonObject);
+    public JSONObject addFieldAndSequence(ApiProcessingStep apiProcessingStep, JSONObject jsonObject);
 
     public JSONObject addFieldListAndQueryDb(ApiProcessingStep apiProcessingStep, JSONObject jsonObject);
 
-    public JSONObject addFieldListAndFormula(ApiProcessingStep apiProcessingStep, JSONObject jsonObject);
+    public boolean addValidateAndFormula(ApiProcessingStep apiProcessingStep, JSONObject jsonObject);
+
+
 
 }

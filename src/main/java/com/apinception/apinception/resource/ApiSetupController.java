@@ -1,5 +1,6 @@
 package com.apinception.apinception.resource;
 
+import com.alibaba.fastjson.JSONObject;
 import com.apinception.apinception.common.ResultBase;
 import com.apinception.apinception.model.ApiSetup;
 import com.apinception.apinception.model.ApiSetupRequest;
@@ -70,5 +71,17 @@ public class ApiSetupController {
          ResultBase<Boolean> resultBase = new ResultBase<>();
          resultBase.setSuccess(true);
          return resultBase;
+    }
+
+    public static void main(String[] args) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("productCode",123);
+        jsonObject.put("dateOfBirth","2018-02-04");
+        jsonObject.put("doesInsuredSmoke","true");
+        jsonObject.put("fullName","true");
+        jsonObject.put("gender","true");
+        jsonObject.put("membership","true");
+        jsonObject.put("apiId","true");
+        System.out.printf(jsonObject.toString());
     }
 }

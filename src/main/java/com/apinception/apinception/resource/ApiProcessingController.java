@@ -54,10 +54,22 @@ public class ApiProcessingController {
     }
 
     @GetMapping("/findApiProcessing/{apiId}")
-    public ResultBase<ApiProcessing> getApiProcessing(@PathVariable String apiId){
+    public ResultBase<List<ApiProcessingStep>> getApiProcessing(@PathVariable String apiId){
         ApiProcessing allByApiIdEquals = repository.findAllByApiIdEquals(apiId);
-        ResultBase<ApiProcessing> resultBase = new ResultBase<>(allByApiIdEquals);
-        return resultBase;
+        if (allByApiIdEquals != null){
+            List<ApiProcessingStep> apiProcessingStepList = allByApiIdEquals.getApiProcessingStepList();
+            if (!CollectionUtils.isEmpty(apiProcessingStepList)){
+                ResultBase<List<ApiProcessingStep>> resultBase = new ResultBase<>(allByApiIdEquals.getApiProcessingStepList());
+                return resultBase;
+            }else {
+                ResultBase<List<ApiProcessingStep>> resultBase = new ResultBase<>(null);
+                return resultBase;
+            }
+        }else {
+            ResultBase<List<ApiProcessingStep>> resultBase = new ResultBase<>(null);
+            return resultBase;
+        }
+
     }
 
     @DeleteMapping("/deleteApiProcessing/{id}")

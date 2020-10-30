@@ -7,11 +7,14 @@ import com.apinception.apinception.common.ResultBase;
 import com.apinception.apinception.model.ApiProcessing;
 import com.apinception.apinception.model.ApiProcessingStep;
 import com.apinception.apinception.repository.ApiProcessingRepository;
+import com.apinception.apinception.service.CommonQueryService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collections;
@@ -27,11 +30,14 @@ import java.util.stream.Stream;
 @RestController
 public class ApiProcessResultController {
 
+    @Autowired
+    private CommonQueryService commonQueryService;
 
     @Autowired
     private ApiProcessingRepository apiProcessingRepository;
 
-    public ResultBase<Object> process(String json){
+    @GetMapping("/process")
+    public ResultBase<Object> process(@RequestParam String json){
         ResultBase<Object> resultBase = new ResultBase<>();
         if (StringUtils.isEmpty(json)){
             resultBase.setSuccess(false);
@@ -54,24 +60,24 @@ public class ApiProcessResultController {
             List<ApiProcessingStep> sorted = apiProcessingStepList.stream().sorted(Comparator.comparing(ApiProcessingStep::getStepNumber)).collect(Collectors.toList());
             for (ApiProcessingStep apiProcessingStep : sorted){
                 if (apiProcessingStep.getActionType().equals(ActionCommon.ADD_FIELD) && apiProcessingStep.getMethod().equals(ActionCommon.FORMULA)){
-
+                    jsonObject = commonQueryService.addFieldAndFormula(apiProcessingStep, jsonObject);
                 }
 
-                if (apiProcessingStep.getActionType().equals(ActionCommon.ADD_LIST) && apiProcessingStep.getMethod().equals(ActionCommon.FORMULA)){
-
-                }
-
-                if (apiProcessingStep.getActionType().equals(ActionCommon.ADD_FIELD) && apiProcessingStep.getMethod().equals(ActionCommon.QUERY_DB)){
-
-                }
+//                if (apiProcessingStep.getActionType().equals(ActionCommon.VALIDATION) && apiProcessingStep.getMethod().equals(ActionCommon.FORMULA)){
+//                    jsonObject = commonQueryService.addValidateAndFormula(apiProcessingStep,jsonObject);
+//                }
 
                 if (apiProcessingStep.getActionType().equals(ActionCommon.ADD_LIST) && apiProcessingStep.getMethod().equals(ActionCommon.QUERY_DB)){
+                    jsonObject = commonQueryService.addFieldListAndQueryDb(apiProcessingStep,jsonObject);
+                }
 
+                if (apiProcessingStep.getActionType().equals(ActionCommon.ADD_FIELD) && apiProcessingStep.getMethod().equals(ActionCommon.QUOTATION)){
+                    jsonObject = commonQueryService.addFieldAndSequence(apiProcessingStep,jsonObject);
                 }
             }
         }
 
-
-        return null;
+        resultBase.setData(jsonObject);
+        return resultBase;
     }
 }

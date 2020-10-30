@@ -10,6 +10,7 @@ public class ActionCommon {
     // method type
     public static final String FORMULA = "formula";
     public static final String QUERY_DB = "query_DB";
+    public static final String QUOTATION = "sequence";
 
     // apiKey
     public static final String APIID = "apiId";
