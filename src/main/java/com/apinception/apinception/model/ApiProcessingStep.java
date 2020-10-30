@@ -1,5 +1,10 @@
 package com.apinception.apinception.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class ApiProcessingStep {
     private int stepNumber ;
     private String stepName;

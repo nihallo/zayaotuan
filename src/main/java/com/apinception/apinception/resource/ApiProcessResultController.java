@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 负责面向实际业务逻辑端，处理用户配置好的结构体具体的执行逻辑
  */
 @RestController
-public class ApiProcessController {
+public class ApiProcessResultController {
 
 
     public ResultBase<Object> process(String json){

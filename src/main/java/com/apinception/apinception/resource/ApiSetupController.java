@@ -27,7 +27,7 @@ public class ApiSetupController {
     public ResultBase<List<ApiSetup>> getApiSetups(){
         List<ApiSetup> all = repository.findAll();
         ResultBase<List<ApiSetup>> resultBase = new ResultBase<>(all);
-        return resultBase;
+            return resultBase;
     }
 
     @GetMapping("/findApiSetup/{id}")
