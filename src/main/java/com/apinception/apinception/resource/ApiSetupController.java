@@ -1,5 +1,6 @@
 package com.apinception.apinception.resource;
 
+import com.apinception.apinception.common.ResultBase;
 import com.apinception.apinception.model.ApiSetup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,24 +16,33 @@ public class ApiSetupController {
     private ApiSetupRepository repository;
 
     @PostMapping("/addApiSetup")
-    public String saveApiSetup(@RequestBody ApiSetup apiSetup){
-        repository.save(apiSetup);
-        return "api setup saved.";
+    public ResultBase<Boolean> saveApiSetup(@RequestBody ApiSetup apiSetup){
+        ApiSetup save = repository.save(apiSetup);
+        ResultBase<Boolean> resultBase = new ResultBase<>();
+        resultBase.setSuccess(true);
+        return resultBase;
     }
 
     @GetMapping("/getAllApiSetups")
-    public List<ApiSetup> getApiSetups(){
-        return repository.findAll();
+    public ResultBase<List<ApiSetup>> getApiSetups(){
+        List<ApiSetup> all = repository.findAll();
+        ResultBase<List<ApiSetup>> resultBase = new ResultBase<>(all);
+        return resultBase;
     }
 
     @GetMapping("/findApiSetup/{id}")
-    public Optional<ApiSetup> getApiSetup(@PathVariable int id){
-        return repository.findById(id);
+    public ResultBase<ApiSetup> getApiSetup(@PathVariable int id){
+        Optional<ApiSetup> byId = repository.findById(id);
+        ApiSetup apiSetup = byId.get();
+        ResultBase<ApiSetup> resultBase = new ResultBase<>(apiSetup);
+        return resultBase;
     }
 
     @DeleteMapping("/deleteApiSetup/{id}")
-    public  String deleteApiSetup (@PathVariable int id){
+    public  ResultBase<Boolean> deleteApiSetup (@PathVariable int id){
          repository.deleteById(id);
-         return "book deleted.";
+         ResultBase<Boolean> resultBase = new ResultBase<>();
+         resultBase.setSuccess(true);
+         return resultBase;
     }
 }
