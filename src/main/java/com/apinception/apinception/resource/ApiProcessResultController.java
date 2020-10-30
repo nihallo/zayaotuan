@@ -1,6 +1,7 @@
 package com.apinception.apinception.resource;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.apinception.apinception.common.ActionCommon;
 import com.apinception.apinception.common.ResultBase;
@@ -13,10 +14,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -36,22 +36,22 @@ public class ApiProcessResultController {
     @Autowired
     private ApiProcessingRepository apiProcessingRepository;
 
-    @GetMapping("/process")
-    public ResultBase<Object> process(@RequestParam String json){
+    @PostMapping("/process")
+    public ResultBase<Object> process(@RequestBody String json) throws ParseException {
         ResultBase<Object> resultBase = new ResultBase<>();
         if (StringUtils.isEmpty(json)){
             resultBase.setSuccess(false);
             return resultBase;
         }
-
-        JSONObject jsonObject = JSON.parseObject(json);
+        String replace = json.replace("\r\n", "");
+        String s = "{\"productCode\":123,\"gender\":\"true\",\"fullName\":\"true\",\"dateOfBirth\":\"2000-02-04\",\"membership\":\"true\",\"doesInsuredSmoke\":\"true\",\"apiId\":\"0\"}";
+        JSONObject jsonObject = JSON.parseObject(s);
         // 同时判别apicode和具体的入参信息是否存在
-        if (jsonObject.containsKey(ActionCommon.APIID) && jsonObject.get(ActionCommon.APIID) != null
-                && jsonObject.containsKey(ActionCommon.PARAM) && jsonObject.get(ActionCommon.PARAM) != null){
+        if (jsonObject.getString(ActionCommon.APIID)!= null){
             // 获取apiId信息
             String apiId = jsonObject.get(ActionCommon.APIID).toString();
 
-            ApiProcessing apiProcessing = apiProcessingRepository.findById(apiId).get();
+            ApiProcessing apiProcessing = apiProcessingRepository.findAllByApiIdEquals(apiId);
             List<ApiProcessingStep> apiProcessingStepList = apiProcessing.getApiProcessingStepList();
             if (CollectionUtils.isEmpty(apiProcessingStepList)){
                 resultBase.setSuccess(false);
@@ -59,21 +59,29 @@ public class ApiProcessResultController {
             }
             List<ApiProcessingStep> sorted = apiProcessingStepList.stream().sorted(Comparator.comparing(ApiProcessingStep::getStepNumber)).collect(Collectors.toList());
             for (ApiProcessingStep apiProcessingStep : sorted){
-                if (apiProcessingStep.getActionType().equals(ActionCommon.ADD_FIELD) && apiProcessingStep.getMethod().equals(ActionCommon.FORMULA)){
-                    jsonObject = commonQueryService.addFieldAndFormula(apiProcessingStep, jsonObject);
+                if (apiProcessingStep.getActionType().equals(ActionCommon.ADD_FIELD)){
+                    // 基于公式做计算和插入操作
+                       if (apiProcessingStep.getMethod().equals(ActionCommon.FORMULA)){
+                           jsonObject = commonQueryService.addFieldAndFormula(apiProcessingStep, jsonObject);
+                       }
+                       if (apiProcessingStep.getMethod().equals(ActionCommon.QUOTATION)){
+                           jsonObject = commonQueryService.addFieldAndSequence(apiProcessingStep,jsonObject);
+                       }
                 }
 
-//                if (apiProcessingStep.getActionType().equals(ActionCommon.VALIDATION) && apiProcessingStep.getMethod().equals(ActionCommon.FORMULA)){
-//                    jsonObject = commonQueryService.addValidateAndFormula(apiProcessingStep,jsonObject);
-//                }
-
-                if (apiProcessingStep.getActionType().equals(ActionCommon.ADD_LIST) && apiProcessingStep.getMethod().equals(ActionCommon.QUERY_DB)){
-                    jsonObject = commonQueryService.addFieldListAndQueryDb(apiProcessingStep,jsonObject);
+                if (apiProcessingStep.getActionType().equals(ActionCommon.ADD_LIST)){
+                    if (apiProcessingStep.getMethod().equals(ActionCommon.QUERY_DB)){
+                           jsonObject = commonQueryService.addFieldListAndQueryDb(apiProcessingStep,jsonObject);
+                    }
                 }
 
-                if (apiProcessingStep.getActionType().equals(ActionCommon.ADD_FIELD) && apiProcessingStep.getMethod().equals(ActionCommon.QUOTATION)){
-                    jsonObject = commonQueryService.addFieldAndSequence(apiProcessingStep,jsonObject);
+                if (apiProcessingStep.getActionType().equals(ActionCommon.VALIDATION)){
+                    // 基于公式做校验
+                       if (apiProcessingStep.getMethod().equals(ActionCommon.FORMULA)){
+                           jsonObject = commonQueryService.addValidateAndFormula(apiProcessingStep,jsonObject);
+                       }
                 }
+
             }
         }
 
