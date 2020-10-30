@@ -6,5 +6,5 @@ public interface FormulaCaculateService {
 
     public int getAgeLastBirthday(Date dateOfBirth);
 
-    public int getAmount();
+    public String getAmount(String str1,String str2);
 }

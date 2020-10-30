@@ -61,7 +61,10 @@ public class CommonQueryServiceImpl implements CommonQueryService {
                     jsonObject.put(fieldNameListName,ageLastBirthday);
                 }
             }else if (GETAMOUNT.equals(methodName)){
-                int amount = formulaCaculateService.getAmount();
+                String[] spl = str[1].split("\\*");
+                String[] split = spl[0].split("\\.");
+                String am = jsonObject.getString(split[2]);
+                String amount = formulaCaculateService.getAmount("10",spl[1]);
                 String addToWhichListName = apiProcessingStep.getAddToWhichListName();
                 JSONObject jsonObject1 = jsonObject.getJSONObject(addToWhichListName);
                 jsonObject1.put(apiProcessingStep.getFieldNameListName(), amount);
@@ -93,7 +96,6 @@ public class CommonQueryServiceImpl implements CommonQueryService {
         String[] split1 = split[1].split("\\.");
         // 获取对应字段值
         String string = jsonObject.getString(split1[1]);
-        List<PlanDataModel> all = apiPlanDataRepository.findAll();
         PlanDataModel allByAlbEquals = apiPlanDataRepository.findByAlbIn(string);
         String fieldNameListName = apiProcessingStep.getFieldNameListName();
         jsonObject.put(fieldNameListName,allByAlbEquals);

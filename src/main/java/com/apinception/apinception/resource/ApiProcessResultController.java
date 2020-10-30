@@ -60,7 +60,7 @@ public class ApiProcessResultController {
             List<ApiProcessingStep> sorted = apiProcessingStepList.stream().sorted(Comparator.comparing(ApiProcessingStep::getStepNumber)).collect(Collectors.toList());
             for (ApiProcessingStep apiProcessingStep : sorted){
                 if (apiProcessingStep.getActionType().equals(ActionCommon.ADD_FIELD)){
-                    // 基于公式做计算和插入操作
+                       // 基于公式做计算和插入操作
                        if (apiProcessingStep.getMethod().equals(ActionCommon.FORMULA)){
                            jsonObject = commonQueryService.addFieldAndFormula(apiProcessingStep, jsonObject);
                        }

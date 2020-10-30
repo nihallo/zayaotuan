@@ -1,5 +1,6 @@
 package com.apinception.apinception.service.impl;
 
+import com.apinception.apinception.common.ActionCommon;
 import com.apinception.apinception.service.FormulaCaculateService;
 import org.springframework.stereotype.Service;
 
@@ -42,8 +43,8 @@ public class FormulaCaculateServiceImpl implements FormulaCaculateService {
     }
 
     @Override
-    public int getAmount() {
-        return 0;
+    public String getAmount(String str1, String str2) {
+        return "10";
     }
 
 

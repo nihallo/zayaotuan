@@ -1,5 +1,7 @@
 package com.apinception.apinception.common;
 
+import java.math.BigDecimal;
+
 public class ActionCommon {
 
     // action 操作type
@@ -18,5 +20,11 @@ public class ActionCommon {
 
     public static final String LEVEL_1 = "LEVEL_1";
     public static final String LEVEL_2 = "LEVEL_2";
+
+    public static String multiply(String src, String dest) {
+        BigDecimal srcDeci = new BigDecimal(src);
+        BigDecimal destDeci = new BigDecimal(dest);
+        return srcDeci.multiply(destDeci).toString();
+    }
 
 }
