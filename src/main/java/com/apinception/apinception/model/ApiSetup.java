@@ -1,5 +1,6 @@
 package com.apinception.apinception.model;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -12,6 +13,7 @@ import java.util.List;
 @Setter
 @ToString
 @Document(collection="API_SETUP")
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
 public class ApiSetup {
     @Id
     private int id;
