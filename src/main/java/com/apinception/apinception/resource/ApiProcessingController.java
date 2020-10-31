@@ -7,8 +7,10 @@ import com.apinception.apinception.model.ApiSetup;
 import com.apinception.apinception.repository.ApiProcessingRepository;
 import com.apinception.apinception.repository.ApiSetupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +22,9 @@ import java.util.UUID;
 public class ApiProcessingController {
     @Autowired
     private ApiProcessingRepository repository;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @PostMapping("/addApiProcessing")
     public ResultBase<Boolean> saveApiSetup(@RequestBody ApiProcessing apiProcessing){
@@ -34,7 +39,11 @@ public class ApiProcessingController {
             }else {
                 apiProcessingStepList.addAll(apiProcessing.getApiProcessingStepList());
                 allByApiIdEquals.setApiProcessingStepList(apiProcessingStepList);
-                repository.save(apiProcessing);
+                Query query = new Query(Criteria.where("apiId").is(apiProcessing.getApiId()));
+                Update update = new Update().set("apiProcessingStepList", apiProcessingStepList);
+//                repository.deleteById(allByApiIdEquals.getApiId());
+                mongoTemplate.updateFirst(query, update, ApiProcessing.class);
+//                repository.save(allByApiIdEquals);
                 resultBase.setSuccess(true);
                 return resultBase;
             }

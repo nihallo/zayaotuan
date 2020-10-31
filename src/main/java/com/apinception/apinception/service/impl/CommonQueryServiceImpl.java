@@ -8,6 +8,9 @@ import com.apinception.apinception.repository.ApiPlanDataRepository;
 import com.apinception.apinception.service.CommonQueryService;
 import com.apinception.apinception.service.FormulaCaculateService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -25,6 +28,8 @@ public class CommonQueryServiceImpl implements CommonQueryService {
 
     @Autowired
     private ApiPlanDataRepository apiPlanDataRepository;
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @Autowired
     private FormulaCaculateService formulaCaculateService;
@@ -61,14 +66,14 @@ public class CommonQueryServiceImpl implements CommonQueryService {
                     jsonObject.put(fieldNameListName,ageLastBirthday);
                 }
             }else if (GETAMOUNT.equals(methodName)){
-                String[] spl = str[1].split("\\*");
-                String[] split = spl[0].split("\\.");
-                String am = jsonObject.getString(split[2]);
-                String amount = formulaCaculateService.getAmount("10",spl[1]);
-                String addToWhichListName = apiProcessingStep.getAddToWhichListName();
-                JSONObject jsonObject1 = jsonObject.getJSONObject(addToWhichListName);
-                jsonObject1.put(apiProcessingStep.getFieldNameListName(), amount);
-                jsonObject.put(addToWhichListName,jsonObject1);
+//                String[] spl = str[1].split("\\*");
+//                String[] split = spl[0].split("\\.");
+//                String am = jsonObject.getString(split[2]);
+//                String amount = formulaCaculateService.getAmount("10",spl[1]);
+//                String addToWhichListName = apiProcessingStep.getAddToWhichListName();
+//                JSONObject jsonObject1 = jsonObject.getJSONObject(addToWhichListName);
+//                jsonObject1.put(apiProcessingStep.getFieldNameListName(), amount);
+//                jsonObject.put(addToWhichListName,jsonObject1);
             }
             return jsonObject;
         }else {
@@ -96,7 +101,10 @@ public class CommonQueryServiceImpl implements CommonQueryService {
         String[] split1 = split[1].split("\\.");
         // 获取对应字段值
         String string = jsonObject.getString(split1[1]);
-        PlanDataModel allByAlbEquals = apiPlanDataRepository.findByAlbIn(string);
+        Query query = new Query(Criteria.where("alb").is(string));
+        List<PlanDataModel> allByAlbEquals = mongoTemplate.find(query, PlanDataModel.class);
+//        List<PlanDataModel> allByAlbEquals = apiPlanDataRepository.findByAlbIn(string);
+//                .findByAlbIn(string);
         String fieldNameListName = apiProcessingStep.getFieldNameListName();
         jsonObject.put(fieldNameListName,allByAlbEquals);
         return jsonObject;
